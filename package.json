@@ -1,11 +1,23 @@
 {
-  "name": "dag-drawing-tool",
-  "private": true,
-  "version": "0.0.0",
+  "name": "tldraw-dag",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build --mode lib",
+    "build:lib": "tsc -p tsconfig.lib.json && vite build --mode lib",
     "lint": "eslint .",
     "preview": "vite preview"
   },
