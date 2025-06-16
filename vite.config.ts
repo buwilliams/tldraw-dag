@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
     return {
       plugins: [react()],
       build: {
+        emptyOutDir: false, // Don't clear dist directory to preserve TypeScript declarations
         lib: {
           entry: resolve(__dirname, 'src/index.ts'),
           name: 'TldrawDAG',

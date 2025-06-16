@@ -16,8 +16,12 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --mode lib",
-    "build:lib": "tsc -p tsconfig.lib.json && vite build --mode lib",
+    "build": "npm run build:lib",
+    "build:lib": "npm run clean && npm run build:types && npm run build:bundle && npm run verify:build",
+    "build:types": "tsc -p tsconfig.lib.json",
+    "build:bundle": "vite build --mode lib",
+    "verify:build": "test -f dist/index.d.ts && test -f dist/index.js && test -f dist/style.css && echo '✓ Build verification passed: All required files generated'",
+    "clean": "rm -rf dist/",
     "lint": "eslint .",
     "preview": "vite preview"
   },

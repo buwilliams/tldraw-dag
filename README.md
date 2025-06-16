@@ -62,6 +62,39 @@ Testing -> End (Deploy:1)
    npm run build
    ```
 
+### Library Build Process
+
+The library uses a multi-step build process that ensures TypeScript declarations are always generated:
+
+```bash
+npm run build:lib    # Complete library build
+```
+
+**Build Steps:**
+1. `clean` - Removes existing dist/ directory
+2. `build:types` - Generates TypeScript declaration files (.d.ts)
+3. `build:bundle` - Creates JavaScript bundle and CSS with Vite
+4. `verify:build` - Validates all required files are present
+
+**Individual Commands:**
+```bash
+npm run clean          # Clean dist directory
+npm run build:types    # Generate TypeScript declarations only
+npm run build:bundle   # Generate JavaScript bundle only
+npm run verify:build   # Verify build output
+```
+
+**Output Structure:**
+```
+dist/
+├── index.js           # Main library bundle (ES modules)
+├── index.d.ts         # Main TypeScript declarations
+├── style.css          # Required tldraw styles
+├── components/        # Component type definitions
+├── lib/              # Core library type definitions  
+└── types/            # DAG format type definitions
+```
+
 ### Using as a Library in Your React Project
 
 This package can be imported and used as a reusable component in other React applications.
