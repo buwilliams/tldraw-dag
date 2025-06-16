@@ -12,6 +12,7 @@ export interface DagTldrawProps {
     className?: string;
     style?: React.CSSProperties;
     autoImport?: string;
+    licenseKey?: string;
 }
 export declare const DagTldraw: import("react").ForwardRefExoticComponent<DagTldrawProps & import("react").RefAttributes<DagTldrawRef>>;
 //# sourceMappingURL=DagTldraw.d.ts.map

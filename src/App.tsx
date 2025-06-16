@@ -229,6 +229,8 @@ function App() {
           onError={handleError}
           persistenceKey="dag-demo"
           style={{ width: '100%', height: '100%' }}
+          // Note: "Made with tldraw" attribution is shown by default (license requirement)
+          // licenseKey="your-key" // Uncomment if you have a tldraw business license
         />
       </div>
     </div>

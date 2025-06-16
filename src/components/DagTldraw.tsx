@@ -16,10 +16,11 @@ export interface DagTldrawProps {
   className?: string
   style?: React.CSSProperties
   autoImport?: string
+  licenseKey?: string
 }
 
 export const DagTldraw = forwardRef<DagTldrawRef, DagTldrawProps>(
-  ({ onMount, onError, persistenceKey, className, style, autoImport }, ref) => {
+  ({ onMount, onError, persistenceKey, className, style, autoImport, licenseKey }, ref) => {
     const adaptorRef = useRef<DagAdaptor | null>(null)
     const editorRef = useRef<Editor | null>(null)
 
@@ -87,6 +88,7 @@ export const DagTldraw = forwardRef<DagTldrawRef, DagTldrawProps>(
         <Tldraw
           onMount={handleMount}
           persistenceKey={persistenceKey}
+          licenseKey={licenseKey}
         />
       </div>
     )

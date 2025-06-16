@@ -145,6 +145,7 @@ Review -> End (Deploy:1)`
         onError={(error) => console.error('DAG Error:', error)}
         persistenceKey="my-dag-editor"
         style={{ width: '100%', height: '500px' }}
+        // licenseKey="your-key" // Optional: if you have a tldraw business license
       />
     </div>
   )
@@ -368,3 +369,12 @@ adaptor.export(): string
 ## License
 
 MIT
+
+**Note on tldraw Attribution**: This library uses the tldraw SDK, which requires displaying the "Made with tldraw" attribution according to their license terms. The attribution is automatically displayed by default when using the `DagTldraw` component and should not be hidden or obscured. If you have a tldraw business license, you can pass your `licenseKey` prop to remove the attribution:
+
+```tsx
+<DagTldraw
+  licenseKey="your-license-key"
+  // ... other props
+/>
+```
