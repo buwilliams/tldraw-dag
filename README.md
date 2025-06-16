@@ -112,6 +112,7 @@ yarn add @buwilliams/tldraw-dag
 ```tsx
 import React, { useRef } from 'react'
 import { DagTldraw, DagTldrawRef } from '@buwilliams/tldraw-dag'
+import '@buwilliams/tldraw-dag/style.css'
 import type { Editor } from 'tldraw'
 
 function MyApp() {
@@ -155,6 +156,7 @@ Review -> End (Deploy:1)`
 ```tsx
 import React, { useRef, useState } from 'react'
 import { DagTldraw, DagTldrawRef } from '@buwilliams/tldraw-dag'
+import '@buwilliams/tldraw-dag/style.css'
 
 const initialDAG = `Start -> Research (Analyst:1)
 Research -> Design (Designer:2)
@@ -196,6 +198,7 @@ If you need more control, you can use the DAG adaptor directly:
 import React, { useEffect, useRef } from 'react'
 import { Tldraw, Editor } from 'tldraw'
 import { createDagAdaptor, DagAdaptor } from '@buwilliams/tldraw-dag'
+import '@buwilliams/tldraw-dag/style.css'
 
 function CustomDAGEditor() {
   const adaptorRef = useRef<DagAdaptor>()
@@ -270,6 +273,13 @@ Don't forget to import the required CSS in your application:
 
 ```tsx
 import 'tldraw/tldraw.css'
+import '@buwilliams/tldraw-dag/style.css'
+```
+
+**Note:** The library exports its own CSS file that includes all necessary tldraw styles, so you can import just the library styles if preferred:
+
+```tsx
+import '@buwilliams/tldraw-dag/style.css'
 ```
 
 ## Project Structure
