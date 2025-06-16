@@ -35,6 +35,8 @@ Review -> End
 
 ## Getting Started
 
+### Running the Demo Application
+
 1. **Install dependencies:**
    ```bash
    npm install
@@ -49,6 +51,182 @@ Review -> End
    ```bash
    npm run build
    ```
+
+### Using as a Library in Your React Project
+
+This package can be imported and used as a reusable component in other React applications.
+
+#### Installation
+
+```bash
+npm install @buwilliams/tldraw-dag
+# or
+yarn add @buwilliams/tldraw-dag
+```
+
+#### Basic Usage
+
+```tsx
+import React, { useRef } from 'react'
+import { DagTldraw, DagTldrawRef } from '@buwilliams/tldraw-dag'
+import type { Editor } from 'tldraw'
+
+function MyApp() {
+  const dagRef = useRef<DagTldrawRef>(null)
+
+  const handleImport = () => {
+    const dagText = `Start -> Process (Worker:2)
+Process -> End (Review:1)`
+    dagRef.current?.importDAG(dagText)
+  }
+
+  const handleExport = () => {
+    const exported = dagRef.current?.exportDAG()
+    console.log('Exported DAG:', exported)
+  }
+
+  const handleMount = (editor: Editor) => {
+    console.log('tldraw editor mounted:', editor)
+  }
+
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <button onClick={handleImport}>Import DAG</button>
+      <button onClick={handleExport}>Export DAG</button>
+      
+      <DagTldraw
+        ref={dagRef}
+        onMount={handleMount}
+        onError={(error) => console.error('DAG Error:', error)}
+        persistenceKey="my-dag-editor"
+        style={{ width: '100%', height: '500px' }}
+      />
+    </div>
+  )
+}
+```
+
+#### Advanced Usage with Auto-Import
+
+```tsx
+import React, { useRef, useState } from 'react'
+import { DagTldraw, DagTldrawRef } from '@buwilliams/tldraw-dag'
+
+const initialDAG = `Start -> Research (Analyst:1)
+Research -> Design (Designer:2)
+Design -> Development (Developer:3)
+Development -> Testing (QA:2)
+Testing -> End (Deploy:1)`
+
+function AdvancedDAGEditor() {
+  const dagRef = useRef<DagTldrawRef>(null)
+  const [error, setError] = useState<string>('')
+
+  return (
+    <div>
+      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+      
+      <DagTldraw
+        ref={dagRef}
+        autoImport={initialDAG}  // Automatically import this DAG on mount
+        onError={setError}
+        persistenceKey="advanced-dag"
+        className="my-dag-editor"
+        style={{ 
+          width: '100%', 
+          height: '600px',
+          border: '1px solid #ccc',
+          borderRadius: '8px'
+        }}
+      />
+    </div>
+  )
+}
+```
+
+#### Direct API Usage
+
+If you need more control, you can use the DAG adaptor directly:
+
+```tsx
+import React, { useEffect, useRef } from 'react'
+import { Tldraw, Editor } from 'tldraw'
+import { createDagAdaptor, DagAdaptor } from '@buwilliams/tldraw-dag'
+
+function CustomDAGEditor() {
+  const adaptorRef = useRef<DagAdaptor>()
+
+  const handleMount = (editor: Editor) => {
+    adaptorRef.current = createDagAdaptor(editor)
+    
+    // Import a DAG
+    try {
+      adaptorRef.current.import('Start -> End (Complete:1)')
+    } catch (error) {
+      console.error('Import failed:', error)
+    }
+  }
+
+  const exportDAG = () => {
+    if (adaptorRef.current) {
+      try {
+        const dagText = adaptorRef.current.export()
+        console.log('Exported:', dagText)
+      } catch (error) {
+        console.error('Export failed:', error)
+      }
+    }
+  }
+
+  return (
+    <div style={{ width: '100%', height: '100vh' }}>
+      <button onClick={exportDAG}>Export DAG</button>
+      <Tldraw onMount={handleMount} />
+    </div>
+  )
+}
+```
+
+#### TypeScript Types
+
+The library exports all necessary TypeScript types:
+
+```tsx
+import type { 
+  DAG, 
+  DAGNode, 
+  DAGEdge,
+  DagTldrawRef,
+  DagTldrawProps 
+} from '@buwilliams/tldraw-dag'
+
+// Example of working with DAG data structures
+const processDAG = (dag: DAG) => {
+  dag.nodes.forEach((node: DAGNode) => {
+    console.log(`Node: ${node.label} at (${node.x}, ${node.y})`)
+  })
+  
+  dag.edges.forEach((edge: DAGEdge) => {
+    console.log(`Edge: ${edge.skill} (max: ${edge.maxAssignees})`)
+  })
+}
+```
+
+#### Required Dependencies
+
+Make sure your project has these peer dependencies installed:
+
+```bash
+npm install react react-dom tldraw
+```
+
+#### CSS Imports
+
+Don't forget to import the required CSS in your application:
+
+```tsx
+import 'tldraw/tldraw.css'
+```
 
 ## Project Structure
 
