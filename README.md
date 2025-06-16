@@ -240,11 +240,21 @@ The library exports all necessary TypeScript types:
 
 ```tsx
 import type { 
+  // Main component types
+  DagTldrawRef,
+  DagTldrawProps,
+  
+  // DAG data structures
   DAG, 
   DAGNode, 
   DAGEdge,
-  DagTldrawRef,
-  DagTldrawProps 
+  ParsedDAGLine,
+  
+  // Core library types
+  DagAdaptor,
+  
+  // Re-exported tldraw types
+  Editor
 } from '@buwilliams/tldraw-dag'
 
 // Example of working with DAG data structures
@@ -254,9 +264,20 @@ const processDAG = (dag: DAG) => {
   })
   
   dag.edges.forEach((edge: DAGEdge) => {
-    console.log(`Edge: ${edge.skill} (max: ${edge.maxAssignees})`)
+    const skillInfo = edge.skill && edge.maxAssignees 
+      ? `(${edge.skill}:${edge.maxAssignees})` 
+      : '(no skill assigned)'
+    console.log(`Edge: ${edge.fromNodeId} -> ${edge.toNodeId} ${skillInfo}`)
   })
 }
+```
+
+**Individual Module Type Imports:**
+```tsx
+// Import specific module types if needed
+import type { DAG, DAGNode, DAGEdge } from '@buwilliams/tldraw-dag/types'
+import type { DagTldrawRef, DagTldrawProps } from '@buwilliams/tldraw-dag/components'
+import type { DagAdaptor } from '@buwilliams/tldraw-dag/lib'
 ```
 
 #### Required Dependencies
