@@ -4,8 +4,14 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "noEmit": false,
+    "emitDeclarationOnly": true
   },
-  "include": ["src"],
-  "exclude": ["src/App.tsx", "src/main.tsx", "src/components/DagEditor.tsx"]
+  "include": [
+    "src/index.ts",
+    "src/types/dag.ts", 
+    "src/lib/dag-adaptor.ts",
+    "src/components/DagTldraw.tsx"
+  ]
 }
