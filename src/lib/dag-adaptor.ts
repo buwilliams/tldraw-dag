@@ -554,7 +554,7 @@ export class DagAdaptor {
         
         arrowShapes.forEach((arrow, index) => {
           try {
-            if (!arrow || !arrow.id || !arrow.props?.text) return
+            if (!arrow || !arrow.id) return
             
             // Find bindings for this arrow with validation
             const arrowBindings = allBindings.filter((binding: any) => {
@@ -602,7 +602,7 @@ export class DagAdaptor {
                 }
                 
                 // Parse skill:maxAssignees from arrow text if present
-                const arrowText = arrow.props.text.trim()
+                const arrowText = arrow.props?.text?.trim() || ''
                 if (arrowText) {
                   const match = arrowText.match(/^(.+):(\d+)$/)
                   if (match) {
