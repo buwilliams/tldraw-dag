@@ -16,10 +16,11 @@ A visual DAG (Directed Acyclic Graph) editor built with React, TypeScript, Vite,
 
 ## DAG Format
 
-The tool uses a simple text format for defining DAGs:
+The tool supports a flexible text format for defining DAGs. Skill assignments are optional:
 
 ```
-Node1 -> Node2 (Skill:MaxAssignees)
+Node1 -> Node2                    // Simple connection
+Node1 -> Node2 (Skill:MaxAssignees)  // With skill and max assignees
 ```
 
 **Example:**
@@ -31,6 +32,15 @@ Film -> Editing (Editor:1)
 Voice Over -> Editing (Editor:1)
 Editing -> Review (Thought Leadership:1)
 Review -> End
+```
+
+**Mixed Format Example:**
+```
+Start -> Research
+Research -> Design (Designer:2)
+Design -> Development (Developer:3)
+Development -> Testing
+Testing -> End (Deploy:1)
 ```
 
 ## Getting Started
@@ -76,7 +86,8 @@ function MyApp() {
 
   const handleImport = () => {
     const dagText = `Start -> Process (Worker:2)
-Process -> End (Review:1)`
+Process -> Review
+Review -> End (Deploy:1)`
     dagRef.current?.importDAG(dagText)
   }
 
@@ -114,9 +125,9 @@ import { DagTldraw, DagTldrawRef } from '@buwilliams/tldraw-dag'
 
 const initialDAG = `Start -> Research (Analyst:1)
 Research -> Design (Designer:2)
-Design -> Development (Developer:3)
+Design -> Development
 Development -> Testing (QA:2)
-Testing -> End (Deploy:1)`
+Testing -> End`
 
 function AdvancedDAGEditor() {
   const dagRef = useRef<DagTldrawRef>(null)
@@ -159,9 +170,9 @@ function CustomDAGEditor() {
   const handleMount = (editor: Editor) => {
     adaptorRef.current = createDagAdaptor(editor)
     
-    // Import a DAG
+    // Import a DAG with mixed format
     try {
-      adaptorRef.current.import('Start -> End (Complete:1)')
+      adaptorRef.current.import('Start -> Process (Worker:1)\\nProcess -> End')
     } catch (error) {
       console.error('Import failed:', error)
     }

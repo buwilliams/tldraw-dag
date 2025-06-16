@@ -9,8 +9,8 @@ export interface DAGEdge {
   id: string
   fromNodeId: string
   toNodeId: string
-  skill: string
-  maxAssignees: number
+  skill?: string
+  maxAssignees?: number
 }
 
 export interface DAG {
@@ -21,8 +21,8 @@ export interface DAG {
 export interface ParsedDAGLine {
   from: string
   to: string
-  skill: string
-  maxAssignees: number
+  skill?: string
+  maxAssignees?: number
 }
 
 // Utility functions for parsing DAG text format
@@ -31,9 +31,10 @@ export function parseDAGText(text: string): DAG {
   const parsedLines: ParsedDAGLine[] = []
   
   for (const line of lines) {
-    const match = line.match(/^(.+?)\s*->\s*(.+?)\s*\((.+?):(\d+)\)$/)
-    if (match) {
-      const [, from, to, skill, maxAssignees] = match
+    // Try to match with skill and max assignees first
+    const matchWithSkill = line.match(/^(.+?)\s*->\s*(.+?)\s*\((.+?):(\d+)\)$/)
+    if (matchWithSkill) {
+      const [, from, to, skill, maxAssignees] = matchWithSkill
       if (from && to && skill && maxAssignees) {
         parsedLines.push({
           from: from.trim(),
@@ -41,6 +42,18 @@ export function parseDAGText(text: string): DAG {
           skill: skill.trim(),
           maxAssignees: parseInt(maxAssignees, 10)
         })
+      }
+    } else {
+      // Try to match simple arrow format without skill/assignees
+      const matchSimple = line.match(/^(.+?)\s*->\s*(.+?)$/)
+      if (matchSimple) {
+        const [, from, to] = matchSimple
+        if (from && to) {
+          parsedLines.push({
+            from: from.trim(),
+            to: to.trim()
+          })
+        }
       }
     }
   }
@@ -62,13 +75,21 @@ export function parseDAGText(text: string): DAG {
     const fromNode = nodes.find(n => n.label === line.from)
     const toNode = nodes.find(n => n.label === line.to)
     
-    return {
+    const edge: DAGEdge = {
       id: `edge-${index}`,
       fromNodeId: fromNode!.id,
-      toNodeId: toNode!.id,
-      skill: line.skill,
-      maxAssignees: line.maxAssignees
+      toNodeId: toNode!.id
     }
+    
+    // Only add skill and maxAssignees if they exist
+    if (line.skill !== undefined) {
+      edge.skill = line.skill
+    }
+    if (line.maxAssignees !== undefined) {
+      edge.maxAssignees = line.maxAssignees
+    }
+    
+    return edge
   })
   
   return { nodes, edges }
@@ -83,7 +104,13 @@ export function dagToText(dag: DAG): string {
   return sortedEdges.map(edge => {
     const fromLabel = nodeMap.get(edge.fromNodeId) || 'Unknown'
     const toLabel = nodeMap.get(edge.toNodeId) || 'Unknown'
-    return `${fromLabel} -> ${toLabel} (${edge.skill}:${edge.maxAssignees})`
+    
+    // Include skill and maxAssignees only if they exist
+    if (edge.skill !== undefined && edge.maxAssignees !== undefined) {
+      return `${fromLabel} -> ${toLabel} (${edge.skill}:${edge.maxAssignees})`
+    } else {
+      return `${fromLabel} -> ${toLabel}`
+    }
   }).join('\n')
 }
 

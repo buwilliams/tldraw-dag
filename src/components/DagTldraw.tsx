@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useCallback, useRef, useEffect } from 'react'
+import { forwardRef, useImperativeHandle, useCallback, useRef } from 'react'
 import { Tldraw, Editor } from 'tldraw'
 import 'tldraw/tldraw.css'
 import { createDagAdaptor, DagAdaptor } from '../lib/dag-adaptor'

@@ -55,7 +55,7 @@ export class DagAdaptor {
       // Prepare node shapes with proper z-index values
       let currentIndex = 'a1' as any // Start with a base index
       
-      positioned.nodes.forEach((node, index) => {
+      positioned.nodes.forEach((node) => {
         const shapeId = createShapeId()
         nodeShapeIds.set(node.id, shapeId)
         
@@ -86,7 +86,7 @@ export class DagAdaptor {
       })
 
       // Create arrow shapes for edges with proper bindings
-      positioned.edges.forEach((edge, edgeIndex) => {
+      positioned.edges.forEach((edge) => {
         try {
           const fromNodeShapeId = nodeShapeIds.get(edge.fromNodeId)
           const toNodeShapeId = nodeShapeIds.get(edge.toNodeId)
@@ -120,7 +120,7 @@ export class DagAdaptor {
                   x: toX - Math.min(fromX, toX),
                   y: toY - Math.min(fromY, toY)
                 },
-                text: `${edge.skill}:${edge.maxAssignees}`,
+                text: edge.skill && edge.maxAssignees ? `${edge.skill}:${edge.maxAssignees}` : '',
                 color: 'black',
                 fill: 'none',
                 dash: 'solid',
@@ -267,10 +267,8 @@ export class DagAdaptor {
     })
 
     // Apply crossing reduction using barycenter method
-    this.reduceCrossings(nodesByLevel, dag.edges, levels)
+    this.reduceCrossings(nodesByLevel, dag.edges)
 
-    // Calculate dynamic spacing based on number of nodes
-    const maxNodesInLevel = Math.max(...Array.from(nodesByLevel.values()).map(nodes => nodes.length))
     const baseNodeWidth = 280 // Node width including padding
     const minSpacing = baseNodeWidth + 100 // Minimum space between nodes
     const levelHeight = 250
@@ -301,7 +299,7 @@ export class DagAdaptor {
     return positioned
   }
 
-  private reduceCrossings(nodesByLevel: Map<number, DAGNode[]>, edges: DAGEdge[], levels: Map<string, number>) {
+  private reduceCrossings(nodesByLevel: Map<number, DAGNode[]>, edges: DAGEdge[]) {
     // Apply barycenter heuristic to reduce edge crossings
     const maxIterations = 5
     
@@ -356,7 +354,7 @@ export class DagAdaptor {
       const currentNode = nodes[i]
       const nextNode = nodes[i + 1]
       
-      if (!currentNode.x || !nextNode.x) continue
+      if (!currentNode?.x || !nextNode?.x) continue
       
       const minDistance = nodeWidth + 50 // Minimum distance between node centers
       const currentDistance = nextNode.x - currentNode.x
@@ -597,20 +595,26 @@ export class DagAdaptor {
               const toNodeLabel = nodeIdToLabel.get(toNodeId)
               
               if (fromNodeLabel && toNodeLabel) {
-                // Parse skill:maxAssignees from arrow text
-                const match = arrow.props.text.match(/^(.+):(\d+)$/)
-                if (match) {
-                  const [, skill, maxAssignees] = match
-                  if (skill && maxAssignees) {
-                    edges.push({
-                      id: `edge-${index}`,
-                      fromNodeId: fromNodeId,
-                      toNodeId: toNodeId,
-                      skill: skill.trim(),
-                      maxAssignees: parseInt(maxAssignees, 10)
-                    })
+                const edge: DAGEdge = {
+                  id: `edge-${index}`,
+                  fromNodeId: fromNodeId,
+                  toNodeId: toNodeId
+                }
+                
+                // Parse skill:maxAssignees from arrow text if present
+                const arrowText = arrow.props.text.trim()
+                if (arrowText) {
+                  const match = arrowText.match(/^(.+):(\d+)$/)
+                  if (match) {
+                    const [, skill, maxAssignees] = match
+                    if (skill && maxAssignees) {
+                      edge.skill = skill.trim()
+                      edge.maxAssignees = parseInt(maxAssignees, 10)
+                    }
                   }
                 }
+                
+                edges.push(edge)
               }
             }
           } catch (error) {

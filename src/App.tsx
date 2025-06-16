@@ -9,7 +9,7 @@ AI Concept -> Voice Over (Actor:1)
 Film -> Editing (Editor:1)
 Voice Over -> Editing (Editor:1)
 Editing -> Review (Thought Leadership:1)
-Review -> End (Deliver:1)`
+Review -> End`
 
 function App() {
   const dagRef = useRef<DagTldrawRef>(null)
@@ -208,8 +208,10 @@ function App() {
             color: '#64748b',
             lineHeight: '1.4'
           }}>
-            <strong>Format:</strong> Node1 → Node2 (Skill:Max)<br/>
-            <strong>Example:</strong> Start → Review (Editor:1)<br/>
+            <strong>Format:</strong> Node1 → Node2 or Node1 → Node2 (Skill:Max)<br/>
+            <strong>Examples:</strong><br/>
+            • Start → Review (Editor:1)<br/>
+            • Review → End<br/>
             <strong>Tip:</strong> Alt+drag to duplicate shapes
           </div>
         </div>
